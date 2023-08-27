@@ -1,2 +1,6 @@
-github.com/barrett370/cloudflare_dynamicdns v0.0.0-20230219143920-98fb65fd18d3 h1:qQfL1zCfjcAFP3MwMsugNBuP0hhtF6RWjatGzjiOIo4=
-github.com/barrett370/cloudflare_dynamicdns v0.0.0-20230219143920-98fb65fd18d3/go.mod h1:l0xqXx914VriS9GOq8amQxCtShJ1MGrqe21ja38eHSk=
+github.com/barrett370/crongo v0.0.0-20230827005336-b7185ae43b4b h1:Tc07c7FNglzLQR5Sr2sgewrbG61WXiB/3HgSC5WNXAo=
+github.com/barrett370/crongo v0.0.0-20230827005336-b7185ae43b4b/go.mod h1:tq5ALS/OzRxjKPmPXltSOkT7XuHXun/Ko+BOB2U1A1M=
+github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
+github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
+github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
+gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=

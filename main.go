@@ -15,7 +15,7 @@ import (
 	"github.com/barrett370/crongo"
 )
 
-type ipUpdateService struct {
+type ipUpdateTask struct {
 	target string
 	client *http.Client
 }
@@ -26,23 +26,24 @@ const (
 	envNextDNSIntervalSeconds = "NEXTDNS_INTERVAL_SECONDS"
 )
 
-func newIPUpdateService(target string) *ipUpdateService {
-	return &ipUpdateService{
+func newIPUpdateTask(target string) *ipUpdateTask {
+	return &ipUpdateTask{
 		target: target,
 		client: http.DefaultClient,
 	}
 }
 
-func (i ipUpdateService) Run(ctx context.Context) error {
+func (i ipUpdateTask) Run(ctx context.Context) error {
 	resp, err := i.client.Get(i.target)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
-	_, err = io.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}
+	log.Printf("successfully completed ip update task. Response: %v", string(body))
 	return nil
 }
 
@@ -67,13 +68,17 @@ func main() {
 		}
 	}
 	log.Printf("Starting update service: profile: %s, target: %s, interval seconds: %d\n", nextDNSProfile, nextDNSTarget, nextDNSIntervalSeconds)
-	svc := newIPUpdateService(nextDNSTarget)
+	task := newIPUpdateTask(nextDNSTarget)
+
 	errc := make(chan error)
-	cronSvc := crongo.New(fmt.Sprintf("DynamicNextDNS [%s]", nextDNSProfile), svc, time.Duration(nextDNSIntervalSeconds)*time.Second, crongo.WithErrorsOut(errc))
+	errLogCleanup := make(chan struct{})
+
+	cronSvc := crongo.New(fmt.Sprintf("DynamicNextDNS [%s]", nextDNSProfile), task, time.Duration(nextDNSIntervalSeconds)*time.Second, crongo.WithErrorsOut(errc))
 	go func() {
 		for err := range errc {
 			log.Printf("error from cronner, %v", err)
 		}
+		close(errLogCleanup)
 	}()
 	cronSvc.Start()
 
@@ -83,4 +88,5 @@ func main() {
 	log.Println("received os interrupt or kill, stopping update processes..")
 	cronSvc.Stop()
 	close(errc)
+	<-errLogCleanup
 }
